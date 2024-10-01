@@ -1,0 +1,24 @@
+name: Mirror Website
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # 每小时执行一次
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Fetch website content
+      run: curl -o site.txt https://ipdb.api.030101.xyz/?type=bestproxy&country=true
+
+    - name: Commit changes
+      run: |
+        git config --global user.name "keaeye"
+        git config --global user.email "chen050124@126.com"
+        git add site.txt
+        git commit -m "自动更新网站镜像" || echo "没有变化"
+        git push
